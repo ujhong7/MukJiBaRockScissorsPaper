@@ -9,7 +9,7 @@ import Foundation
 
 // 가위바위보 열거형
 enum RockScissorsPaper: String {
-    case exit = "0"
+    // case exit = "0"
     case scissors = "1"
     case rock = "2"
     case paper = "3"
@@ -34,7 +34,7 @@ enum RockScissorsPaper: String {
 }
 
 enum MukJjiBBa: String {
-    case exit = "0"
+    // case exit = "0" // 🔴 0굳이 열거형에서 쓰는이유가 뭐냐고 피드백 받아서 그냥 여기서 없애고 0입력시 종료 수정중
     case muk = "1"
     case jji = "2"
     case bba = "3"
@@ -71,21 +71,40 @@ class Game {
     
     // 가위바위보 게임을 플레이하는 메서드
     func playRockScissorsPaperGame() {
+        
         while OnGame {
             print("가위(1), 바위(2), 보(3)! <종료 : 0> : ", terminator: "")
-            if let input = readLine(),
-               let userChoice = RockScissorsPaper(rawValue: input) {
-                if userChoice == .exit {
-                    endGame()
-                } else {
-                    handleRockScissorsPaperGame(userChoice)
-                }
+            guard let input = readLine() else {
+//                print("잘못된 입력입니다. 다시 시도해주세요.")
+                continue
+            }
+
+            if input == "0" {
+                endGame()
+            } else if let userChoice = RockScissorsPaper(rawValue: input) {
+                handleRockScissorsPaperGame(userChoice)
             } else {
-                print("잘못된 입력입니다. 다시 시도해주세요.")
+                print("잘못된 입력입니다. 다시 시도해주세요.@@@@")
             }
         }
+        
+//        while OnGame {
+//            print("가위(1), 바위(2), 보(3)! <종료 : 0> : ", terminator: "")
+//            guard let input = readLine(),
+//                  let userChoice = RockScissorsPaper(rawValue: input) else {
+//                print("잘못된 입력입니다. 다시 시도해주세요.")
+//                continue
+//            }
+//            
+//            if input == "0" {
+//                endGame()
+//            } else {
+//                handleRockScissorsPaperGame(userChoice)
+//            }
+//        }
     }
     
+
     // 가위바위보 게임 결과를 처리하는 메서드
     private func handleRockScissorsPaperGame(_ userChoice: RockScissorsPaper) {
         let comChoice = RockScissorsPaper.randomChoice()
@@ -112,19 +131,21 @@ class Game {
     // 묵찌빠 게임을 플레이하는 메서드
     private func playMukJjiBBaGame() {
         print("[\(userTurn ? "사용자" : "컴퓨터") 턴] 묵(1) 찌(2) 빠(3)! <종료: 0> : ", terminator: "")
-        if let input = readLine(),
-           let userChoice = MukJjiBBa(rawValue: input) {
-            if userChoice == .exit {
-                endGame()
-            } else {
-                handleMukJjiBBaGame(userChoice)
-            }
-        } else {
+        guard let input = readLine(),
+              let userChoice = MukJjiBBa(rawValue: input) else {
             print("잘못된 입력입니다. 다시 시도해주세요.")
-            print("(잘못입력했기때문에 턴 넘어감)")
+            print("(잘못 입력했기 때문에 턴 넘어감)")
             userTurn.toggle()
             playMukJjiBBaGame()
+            return
         }
+
+        if input == "0" {
+            endGame()
+        } else {
+            handleMukJjiBBaGame(userChoice)
+        }
+
     }
     
     // 묵찌빠 게임 결과를 처리하는 메서드
